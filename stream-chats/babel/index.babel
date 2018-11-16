@@ -1,0 +1,143 @@
+class ChannelChats {
+  chatRows = []
+  darkMode = true
+  wrapper = $('.chats-wrapper')
+  query = ''
+
+  constructor(channels) {
+    rows = channels || location.search
+      .slice(1)
+      .split('&')
+      .filter(g => {
+        if(g == 'light=true') {
+          this.darkMode = false
+          this.wrapper.addClass('light-mode')
+          return false
+        }
+        return g && g.length;
+      })
+      .map(g => g.split(','))
+    
+    if(location.hash == '#edit')
+      this.wrapper.addClass('edit-mode')
+    rows.forEach(r => {
+      const match = /^\[(\d+)\]/.exec(r[0])
+      let rowSize = 100
+      if(match != null) {
+        r[0] = r[0].replace(match[0], '')
+        rowSize = parseInt(match[1]) || 100
+      }
+      this.chatRows.push({size: rowSize, chats: r.map(c => {
+        const data = c.split('.')
+        const chat = {name: data[0], element: this.createChat(data[0]) }
+        chat.size = parseInt(data[1]) || 100
+        chat.element[0].style.flex = chat.size
+        return chat
+      })})
+    })
+    
+    if(this.chatRows.length) {
+      this.loadAllChats()
+      this.calculateWindowCodes()
+    }
+    
+    $(window).on('hashchange', e => {
+      if(location.hash == '#edit') {
+        this.wrapper.addClass('edit-mode')
+      } else if(this.wrapper.hasClass('edit-mode')) {
+        this.closeEditMode()
+      }
+    })
+  }
+
+  closeEditMode() {
+    prompt('Copy this link to retain settings', 'https://s.codepen.io/haxandsnax/debug/QJgPmM/bYMdyeRmvXbr?'+this.query)
+    this.wrapper.removeClass('edit-mode')
+  }
+
+
+  createChat(c) {
+    var chat = $(`<div class="chat"><div class="chat-name">${c}</div><iframe src="https://twitch.tv/embed/${c}/chat${this.darkMode ? '?darkpopout' : ''}"></iframe></div>`)
+    return chat
+  }
+
+  createColumnSeparator(row, colLeft, colRight) {
+    var sep = $('<div class="chat-col-separator" draggable="true" />');
+    sep.on('dragend', e => {
+      var flex = _.sumBy(row.chats, 'size')
+      var winWidth = window.innerWidth
+      var flexDifference = e.offsetX/winWidth*flex;
+      row.chats[colLeft].size += Math.round(flexDifference)
+      row.chats[colRight].size -= Math.round(flexDifference)
+      row.chats[colLeft].element[0].style.flex = row.chats[colLeft].size
+      row.chats[colRight].element[0].style.flex = row.chats[colRight].size
+      
+      this.calculateWindowCodes()
+    })
+    
+    sep.on('dblclick', e => {
+      this.closeEditMode()
+    })
+    return sep
+  }
+
+  createRowSeparator(rowAbove, rowBelow) {
+    var sep = $('<div class="chat-row-separator" draggable="true" />');
+    sep.on('dragend', e => {
+      var flex = _.sumBy(this.chatRows, 'size')
+      var winHeight = window.innerHeight
+      var flexDifference = e.offsetY/winHeight*flex;
+      this.chatRows[rowAbove].size += Math.round(flexDifference)
+      this.chatRows[rowBelow].size -= Math.round(flexDifference)
+      this.chatRows[rowAbove].element[0].style.flex = this.chatRows[rowAbove].size
+      this.chatRows[rowBelow].element[0].style.flex = this.chatRows[rowBelow].size
+      
+      this.calculateWindowCodes()
+    })
+    sep.on('dblclick', e => {
+      this.closeEditMode()
+    })
+    return sep
+  }
+
+  calculateWindowCodes() {
+    let names = [];
+    const query = this.chatRows.map(r => {
+      return `[${r.size}]` + r.chats.map(c => {
+        names.push(c.name)
+        return `${c.name}.${c.size}`
+      }).join(',')
+    }).join('&')
+    
+    let nameStr = names = names.slice(0,4).join(', ')
+    if(names.length > 4)
+      nameStr += ` +${names.length-4} more`
+    this.query = query
+    window.history.pushState({}, nameStr, `?${query}#edit`)
+  }
+
+  loadAllChats() {
+    
+    this.chatRows.forEach((row, rowIndex) => {
+      if(rowIndex > 0) {
+        this.createRowSeparator(rowIndex-1, rowIndex).appendTo(this.wrapper)
+      }
+      const rowEl = row.element = $('<div class="chat-row" />').appendTo(this.wrapper)
+      rowEl[0].style.flex = row.size
+      
+      row.chats.forEach((r,i) => {
+        if(i > 0) {
+          this.createColumnSeparator(row, i-1, i).appendTo(rowEl)
+        }
+        r.element.appendTo(rowEl)
+        
+      })
+    })
+  }
+}
+
+
+$(document).ready(function() {
+  const channelChats = new ChannelChats();
+  
+});
