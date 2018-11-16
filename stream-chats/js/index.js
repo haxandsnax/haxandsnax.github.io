@@ -4,7 +4,8 @@ var _createClass = function () {function defineProperties(target, props) {for (v
 
 
 
-  function ChannelChats(channels) {var _this = this;_classCallCheck(this, ChannelChats);this.chatRows = [];this.darkMode = true;this.wrapper = $('.chats-wrapper');this.query = '';
+
+  function ChannelChats(channels) {var _this = this;_classCallCheck(this, ChannelChats);this.chatRows = [];this.darkMode = true;this.wrapper = $('.chats-wrapper');this.query = '';this.editMode = false;
     rows = channels || location.search.
     slice(1).
     split('&').
@@ -18,8 +19,10 @@ var _createClass = function () {function defineProperties(target, props) {for (v
     }).
     map(function (g) {return g.split(',');});
 
-    if (location.hash == '#edit')
-    this.wrapper.addClass('edit-mode');
+    if (location.hash == '#edit') {
+      this.editMode = true;
+      this.wrapper.addClass('edit-mode');
+    }
     rows.forEach(function (r) {
       var match = /^\[(\d+)\]/.exec(r[0]);
       var rowSize = 100;
@@ -51,7 +54,9 @@ var _createClass = function () {function defineProperties(target, props) {for (v
   }_createClass(ChannelChats, [{ key: 'closeEditMode', value: function closeEditMode()
 
     {
-      prompt('Copy this link to retain settings', 'https://s.codepen.io/haxandsnax/debug/QJgPmM/bYMdyeRmvXbr?' + this.query);
+      this.calculateWindowCodes();
+      prompt('Copy this link to retain settings', location.protocol + '//' + location.host + location.pathname + '?' + this.query);
+      this.editMode = false;
       this.wrapper.removeClass('edit-mode');
     } }, { key: 'createChat', value: function createChat(
 
@@ -62,7 +67,7 @@ var _createClass = function () {function defineProperties(target, props) {for (v
     } }, { key: 'createColumnSeparator', value: function createColumnSeparator(
 
     row, colLeft, colRight) {var _this2 = this;
-      var sep = $('<div class="chat-col-separator" draggable="true" />');
+      var sep = $('<div class="chat-col-separator" title="Double click to close edit mode" draggable="true" />');
       sep.on('dragend', function (e) {
         var flex = _.sumBy(row.chats, 'size');
         var winWidth = window.innerWidth;
@@ -82,7 +87,7 @@ var _createClass = function () {function defineProperties(target, props) {for (v
     } }, { key: 'createRowSeparator', value: function createRowSeparator(
 
     rowAbove, rowBelow) {var _this3 = this;
-      var sep = $('<div class="chat-row-separator" draggable="true" />');
+      var sep = $('<div class="chat-row-separator" title="Double click to close edit mode" draggable="true" />');
       sep.on('dragend', function (e) {
         var flex = _.sumBy(_this3.chatRows, 'size');
         var winHeight = window.innerHeight;
@@ -113,7 +118,7 @@ var _createClass = function () {function defineProperties(target, props) {for (v
       if (names.length > 4)
       nameStr += ' +' + (names.length - 4) + ' more';
       this.query = query;
-      window.history.pushState({}, nameStr, '?' + query + '#edit');
+      window.history.pushState({}, nameStr, '?' + query + (this.editMode ? '#edit' : ''));
     } }, { key: 'loadAllChats', value: function loadAllChats()
 
     {var _this4 = this;

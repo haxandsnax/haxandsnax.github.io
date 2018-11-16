@@ -3,6 +3,7 @@ class ChannelChats {
   darkMode = true
   wrapper = $('.chats-wrapper')
   query = ''
+  editMode = false
 
   constructor(channels) {
     rows = channels || location.search
@@ -18,8 +19,10 @@ class ChannelChats {
       })
       .map(g => g.split(','))
     
-    if(location.hash == '#edit')
+    if(location.hash == '#edit') {
+      this.editMode = true
       this.wrapper.addClass('edit-mode')
+    }
     rows.forEach(r => {
       const match = /^\[(\d+)\]/.exec(r[0])
       let rowSize = 100
@@ -51,7 +54,9 @@ class ChannelChats {
   }
 
   closeEditMode() {
-    prompt('Copy this link to retain settings', 'https://s.codepen.io/haxandsnax/debug/QJgPmM/bYMdyeRmvXbr?'+this.query)
+    this.calculateWindowCodes()
+    prompt('Copy this link to retain settings', `${location.protocol}//${location.host}${location.pathname}?${this.query}`)
+    this.editMode = false
     this.wrapper.removeClass('edit-mode')
   }
 
@@ -62,7 +67,7 @@ class ChannelChats {
   }
 
   createColumnSeparator(row, colLeft, colRight) {
-    var sep = $('<div class="chat-col-separator" draggable="true" />');
+    var sep = $('<div class="chat-col-separator" title="Double click to close edit mode" draggable="true" />');
     sep.on('dragend', e => {
       var flex = _.sumBy(row.chats, 'size')
       var winWidth = window.innerWidth
@@ -82,7 +87,7 @@ class ChannelChats {
   }
 
   createRowSeparator(rowAbove, rowBelow) {
-    var sep = $('<div class="chat-row-separator" draggable="true" />');
+    var sep = $('<div class="chat-row-separator" title="Double click to close edit mode" draggable="true" />');
     sep.on('dragend', e => {
       var flex = _.sumBy(this.chatRows, 'size')
       var winHeight = window.innerHeight
@@ -113,7 +118,7 @@ class ChannelChats {
     if(names.length > 4)
       nameStr += ` +${names.length-4} more`
     this.query = query
-    window.history.pushState({}, nameStr, `?${query}#edit`)
+    window.history.pushState({}, nameStr, `?${query}${this.editMode?'#edit':''}`)
   }
 
   loadAllChats() {
