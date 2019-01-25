@@ -52,12 +52,12 @@
     
     window.processVods = (vods) => {
       return new Promise((res, rej) => {
-        res(vods.map(v => `${v.id},${v.created_at},${v.title},${v.duration}`))
+        res(vods.map(v => `"${v.id}","${v.created_at}","${v.title.replace(/"/g, "\\"")}","${v.duration}"`))
       })
     }
     
     window.openVods = (vods) => {
-      const csv = `data:text/csv;charset=utf-8,${vods.reduce((arr, a) => a ? arr.concat(a) : arr, []).join('\r\n')}`
+      const csv = `data:text/csv;charset=utf-8,Video ID,Date,Title,Duration\r\n${vods.reduce((arr, a) => a ? arr.concat(a) : arr, []).join('\r\n')}`
       const uri = encodeURI(csv)
       const link = document.createElement("a")
       link.setAttribute("href", uri)
