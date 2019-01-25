@@ -54,7 +54,7 @@
       return new Promise((res, rej) => {
         res(vods.map(v => {
           let vodTimestamp = v.duration.replace('h',':').replace('m', ':').replace('s', '').split(':').map(s => s.length<2 ? '0'+s : s).join(':')
-          `"${v.id}","${v.created_at}","${v.title.replace(/"/g, "\\\"")}","${vodTimestamp}"`
+          return `"${v.id}","${v.created_at}","${v.title.replace(/"/g, "\\\"")}","${vodTimestamp}"`
         }))
       })
     }
