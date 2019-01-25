@@ -8,16 +8,17 @@
   <div><button onclick="window.fetchVods">Download VOD Info</button></div>
   
   <script type="text/javascript">
-  let vodPromises = []
-  const clientId = 'dxvgc1lhpfm4uuu7i2o7enuy9l1pa6'
-  let userName = 'SelectingStart'
+  window.vodPromises = []
+  window.clientId = 'dxvgc1lhpfm4uuu7i2o7enuy9l1pa6'
+  window.userName = 'SelectingStart'
+  window.userId = '261325817'
   
   window.fetchWithHeaders = (url) => {
     return fetch(url, {headers: {'Client-Id': window.clientId}})
   }
   
   window.getVodsFromCursor = (cursor) => {
-    return window.fetchWithHeaders(`https://api.twitch.tv/helix/videos?user_id=${user.id}&type=archive&after=${cursor}`)
+    return window.fetchWithHeaders(`https://api.twitch.tv/helix/videos?user_id=${window.userId}&type=archive&after=${cursor}`)
       .then(d => d.json())
       .then(resp => {
         window.vodPromises.push(window.processVods(resp.data))
@@ -34,8 +35,9 @@
       .then(d => d.json())
       .then(d => d.data[0])
       .then(user => {
+        window.userId = user.id
         let vods = []
-        fetchWithHeaders(`https://api.twitch.tv/helix/videos?user_id=${user.id}&type=archive`)
+        fetchWithHeaders(`https://api.twitch.tv/helix/videos?user_id=${window.userId}&type=archive`)
           .then(d => d.json())
           .then(resp => {
             let cursor = resp.pagination.cursor
