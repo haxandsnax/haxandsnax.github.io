@@ -25,7 +25,9 @@
         if(resp.data.length > 0)
           window.vodPromises.push(window.getVodsFromCursor(resp.pagination.cursor))
         else
-          Promise.all(window.vodPromises).then(vods => { console.log(vods) })
+          Promise.all(window.vodPromises).then(vods => {
+            window.openVods(vods)
+          })
       })
   }
   
@@ -52,7 +54,12 @@
       return new Promise((res, rej) => {
         res(vods.map(v => `${v.id},${v.created_at},${v.title},${v.duration}`))
       })
-    }    
+    }
+    
+    window.openVods = (vods) => {
+      const csv = `data:text/csv;charset=utf-8,${vods.reduce((arr, a) => a ? arr.concat(a) : arr, []).join('\r\n')}`
+      window.open(encodeURI(csv))
+    }
   </script>
 </body>
 </html>
