@@ -9,6 +9,9 @@
   
   <script type="text/javascript">
   let vodPromises = []
+  const clientId = 'dxvgc1lhpfm4uuu7i2o7enuy9l1pa6'
+  let userName = 'SelectingStart'
+  
   window.fetchWithHeaders = (url) => {
     return fetch(url, {headers: {'Client-Id': window.clientId}})
   }
@@ -47,10 +50,7 @@
       return new Promise((res, rej) => {
         res(vods.map(v => `${v.id},${v.created_at},${v.title},${v.duration}`))
       })
-    }
-    const clientId = 'dxvgc1lhpfm4uuu7i2o7enuy9l1pa6'
-    let userName = 'SelectingStart'
-    
+    }    
   </script>
 </body>
 </html>
