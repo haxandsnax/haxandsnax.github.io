@@ -40,9 +40,7 @@
             if(resp.data.length > 0)
               window.vodPromises.push(window.getVodsFromCursor(resp.pagination.cursor))
           })
-        })
-
-      })
+       })
     }
     
     window.processVods = (vods) => {
