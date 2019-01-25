@@ -5,7 +5,7 @@
 </head>
 <body>
   <div><input type="text" onchange="window.userName = this.value" placeholder="Username" value="SelectingStart" /></div>
-  <div><button onclick="window.fetchVods">Download VOD Info</button></div>
+  <div><button onclick="window.fetchVods()">Download VOD Info</button></div>
   
   <script type="text/javascript">
   window.vodPromises = []
@@ -60,7 +60,7 @@
       const csv = `data:text/csv;charset=utf-8,${vods.reduce((arr, a) => a ? arr.concat(a) : arr, []).join('\r\n')}`
       const uri = encodeURI(csv)
       const link = document.createElement("a")
-      link.setAttribute("href", encodedUri)
+      link.setAttribute("href", uri)
       link.setAttribute("download", "vod_data.csv")
       document.body.appendChild(link)
 
