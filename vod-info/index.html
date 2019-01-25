@@ -52,7 +52,7 @@
     
     window.processVods = (vods) => {
       return new Promise((res, rej) => {
-        res(vods.map(v => `"${v.id}","${v.created_at}","${v.title.replace(/"/g, "\\"")}","${v.duration}"`))
+        res(vods.map(v => `"${v.id}","${v.created_at}","${v.title.replace(/"/g, "\\\"")}","${v.duration}"`))
       })
     }
     
