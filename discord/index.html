@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head> 
+  <title>SnaxPack Discord Integration</title>
+</head>
+<body>
+
+<button onclick="discord()">Discord Login</button>
+<button onclick="twitch()">Twitch</button>
+
+<script type="text/javascript">
+
+  window.onload = function() {
+    const hashObjs = location.hash.slice(1).split('&').reduce((obj, s) => { obj[s.split('=')[0]] = s.split('=')[1]; return obj; }, {})
+    if(localStorage.getItem('discord') === 'true') {
+      localStorage.setItem('discord', '')
+      console.log('discord', hashObjs)
+    }
+    else if(localStorage.getItem('twitch') === 'true') {
+      localStorage.setItem('twitch', '')
+      console.log('twitch', hashObjs)
+    }
+  }
+  function discord() {
+    localStorage.setItem('discord', 'true')
+    window.location.href = 'https://discordapp.com/oauth2/authorize?client_id=557202429561798666&redirect_uri=https%3A%2F%2Fhaxandsnax.github.io%2Fdiscord%2Findex.html&response_type=token&scope=identify%20connections'
+  }
+  function discord() {
+    localStorage.setItem('discord', 'true')
+    window.location.href = 'https://id.twitch.tv/oauth2/authorize?client_id=142x9n2jrzru1yjuec5fh3tks7kvjy&redirect_uri=https%3A%2F%2Fhaxandsnax.github.io%2Fdiscord%2Findex.html&response_type=token'
+  }
+</script>
+</body>
+</html>
