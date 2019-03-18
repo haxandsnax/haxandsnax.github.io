@@ -19,8 +19,8 @@
     else if(localStorage.getItem('twitch') === 'true') {
       localStorage.setItem('twitch', '')
       fetch('https://api.twitch.tv/helix/users', {headers: {'Authorization': `Bearer ${hashObjs.access_token}`}}).then(r => r.json()).then(r => {
-        localStorage.twitchId = r[0].id;
-        fetch(`https://api.twitch.tv/helix/users/follows?to_id=144191527&from_id=${r[0].id}`).then(r => r.json()).then(r => {
+        localStorage.twitchId = r.data[0].id;
+        fetch(`https://api.twitch.tv/helix/users/follows?to_id=144191527&from_id=${localStorage.twitchId}`, {headers: {'Client-Id': '142x9n2jrzru1yjuec5fh3tks7kvjy'}}).then(r => r.json()).then(r => {
           console.log('Following')
         })
       })
