@@ -18,7 +18,12 @@
     }
     else if(localStorage.getItem('twitch') === 'true') {
       localStorage.setItem('twitch', '')
-      console.log('twitch', hashObjs)
+      fetch('https://api.twitch.tv/helix/users', {headers: {'Authorization': `Bearer ${hashObjs.access_token}`}).then(r => r.json()).then(r => {
+        localStorage.twitchId = r[0].id;
+        fetch(`https://api.twitch.tv/helix/users/follows?to_id=144191527&from_id=${r[0].id}`).then(r => r.json()).then(r => {
+          console.log('Following')
+        })
+      })
     }
   }
   function discord() {
