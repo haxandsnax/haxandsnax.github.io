@@ -62,7 +62,7 @@ var _createClass = function () {function defineProperties(target, props) {for (v
 
 
     c) {
-      var chat = $('<div class="chat"><div class="chat-name">' + c + '</div><iframe src="https://twitch.tv/embed/' + c + '/chat' + (this.darkMode ? '?darkpopout' : '') + '"></iframe></div>');
+      var chat = $('<div class="chat"><div class="chat-name">' + c + '</div><iframe src="https://twitch.tv/embed/' + c + '/chat?parent=haxandsnax.github.io' + (this.darkMode ? '&darkpopout' : '') + '"></iframe></div>');
       return chat;
     } }, { key: 'createColumnSeparator', value: function createColumnSeparator(
 
