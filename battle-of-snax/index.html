@@ -40,7 +40,7 @@
   window.onload = function() {
     if(!location.hash) { return; }
     const hashObjs = location.hash.slice(1).split('&').reduce((obj, s) => { obj[s.split('=')[0]] = s.split('=')[1]; return obj; }, {});
-    fetch('https://api.twitch.tv/helix/users', {headers: {'Authorization': `Bearer ${hashObjs.access_token}`}}).then(r => r.json()).then(r => {
+    fetch('https://api.twitch.tv/helix/users', {headers: {'Authorization': `Bearer ${hashObjs.access_token}`, 'Client-Id': '1r7xzkql1rd28c06vptf624p9d7e11'}}).then(r => r.json()).then(r => {
       localStorage.twitchId = r.data[0].id;
       fetch(`https://api.twitch.tv/helix/users/follows?to_id=144191527&from_id=${localStorage.twitchId}`, {headers: {'Client-Id': '1r7xzkql1rd28c06vptf624p9d7e11'}}).then(r => r.json()).then(r => {
         console.log('Following', r)
